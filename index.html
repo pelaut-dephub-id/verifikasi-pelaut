@@ -1,0 +1,66 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verifikasi Sertifikat Pelaut</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f2f2f2; }
+    .container { background: white; padding: 20px; border-radius: 10px; max-width: 500px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    input[type="text"] { width: 100%; padding: 10px; margin-bottom: 10px; }
+    button { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; border-radius: 5px; }
+    table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+    table, th, td { border: 1px solid #ccc; }
+    th, td { padding: 10px; text-align: left; }
+    #qrcode { margin-top: 20px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Verifikasi Sertifikat Pelaut</h2>
+    <form onsubmit="return generateQR(event)">
+      <label for="sertifikat">Masukkan Nomor Sertifikat:</label>
+      <input type="text" id="sertifikat" required>
+      <button type="submit">Cek Sertifikat</button>
+    </form>
+    <table id="resultTable" style="display:none">
+      <thead>
+        <tr><th>Nama</th><th>Nomor Sertifikat</th><th>Status</th></tr>
+      </thead>
+      <tbody id="resultBody"></tbody>
+    </table>
+    <div id="qrcode"></div>
+  </div>
+  <script>
+    const data = [{
+      nama: "Mohammad Noval Ramadhan",
+      sertifikat: "6212021061040520",
+      status: "Valid"
+    }];
+
+    function generateQR(event) {
+      event.preventDefault();
+      const input = document.getElementById("sertifikat").value;
+      const found = data.find(item => item.sertifikat === input);
+      const table = document.getElementById("resultTable");
+      const tbody = document.getElementById("resultBody");
+      const qrContainer = document.getElementById("qrcode");
+      qrContainer.innerHTML = "";
+      tbody.innerHTML = "";
+
+      if (found) {
+        const row = `<tr><td>${found.nama}</td><td>${found.sertifikat}</td><td>${found.status}</td></tr>`;
+        tbody.innerHTML = row;
+        table.style.display = "table";
+        const url = `https://pelaut-dephub-id.github.io/verifikasi-pelaut/${found.sertifikat}`;
+        new QRCode(qrContainer, { text: url, width: 200, height: 200 });
+      } else {
+        alert("Nomor sertifikat tidak ditemukan.");
+        table.style.display = "none";
+      }
+    }
+  </script>
+</body>
+</html>
